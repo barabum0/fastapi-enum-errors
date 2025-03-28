@@ -1,5 +1,14 @@
 # FastAPI Enum Errors
 
+---
+
+[![Stable Version](https://img.shields.io/pypi/v/fastapi-enum-errors?color=blue)](https://pypi.org/project/fastapi-enum-errors/)
+[![Downloads](https://img.shields.io/pypi/dm/fastapi-enum-errors)](https://pypistats.org/packages/fastapi-enum-errors)
+[![Checked with mypy](https://www.mypy-lang.org/static/mypy_badge.svg)](https://mypy-lang.org/)
+[![Linting: Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
+---
+
 A library for defining and handling HTTP errors in your FastAPI applications using Python enums. It lets you create
 structured error definitions that automatically generate standardized JSON responses, API documentation, and even
 detailed Markdown tables for error summaries.
