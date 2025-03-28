@@ -19,7 +19,7 @@ async def jsonhttp_exception_handler(request: Request, exc: JSONHTTPException) -
     )
 
 
-async def errorenum_prepare_app(app: Starlette) -> None:
+def errorenum_prepare_app(app: Starlette) -> None:
     """Configure the application for fastapi-enum-errors.
     :param app: The Starlette/FastAPI application instance (typically FastAPI/APIRouter object)
     """
