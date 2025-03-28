@@ -1,14 +1,11 @@
 [project]
-name = "app"
+name = "fastapi_enum_errors"
 version = "0.1.0"
-description = "Add your description here"
+description = "Addon for FastAPI that simplifies working with custom errors and allows you to operate on them as if they were values in an Enum."
 readme = "README.md"
 license = "MIT"
-requires-python = ">=3.13"
+requires-python = ">=3.12"
 dependencies = []
-
-[project.scripts]
-app = "app.main:main"
 
 [tool.uv]
 package = true
@@ -25,6 +22,6 @@ dev = [
 ]
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 disallow_untyped_defs = true
 ignore_missing_imports = true
