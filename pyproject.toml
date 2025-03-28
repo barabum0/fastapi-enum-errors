@@ -5,7 +5,11 @@ description = "Addon for FastAPI that simplifies working with custom errors and 
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "fastapi>=0.115.12",
+    "httpx>=0.28.1",
+    "pydantic>=2.11.0",
+]
 
 [tool.uv]
 package = true
