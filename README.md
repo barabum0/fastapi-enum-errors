@@ -65,21 +65,25 @@ class SomeErrors(ErrorEnum):
 
 ### 3. Using the Enum in Your Application
 
+The library automatically configures your application by including the built‑in helper function `errorenum_prepare_app`. You just need to call it to ensure your FastAPI (or Starlette) application has the correct exception handler.
+
 #### a. Converting an Error to an Exception
 
-Convert an error enum member to an HTTP exception with a properly formatted JSON response:
+Below is an example that shows how to raise an error:
 
 ```python
 from fastapi import FastAPI
+from fastapi_enum_errors import errorenum_prepare_app
 
 app = FastAPI()
+errorenum_prepare_app(app)
 
 @app.get("/example")
 async def example():
     # Raise a JSONHTTPException based on an enum error.
     raise SomeErrors.SOME_VERY_IMPORTANT_ERROR.as_exception()
 
-# When this endpoint is hit, FastAPI will respond with a JSON error body.
+# When this endpoint is hit, FastAPI will respond with a properly formatted JSON error body.
 ```
 
 #### b. Asserting API Responses in Tests
@@ -99,8 +103,10 @@ Automatically build the OpenAPI response specifications for an endpoint by calli
 
 ```python
 from fastapi import FastAPI
+from fastapi_enum_errors import errorenum_prepare_app
 
 app = FastAPI()
+errorenum_prepare_app(app)
 
 
 @app.get(
@@ -130,9 +136,9 @@ print(table_md)
 
 Example output:
 
-|Error Code                   |Description                       | Status code       |
-|-----------------------------|----------------------------------|-------------------|
-|`some_very_important_error`  |THIS ERROR IS VERY VERY IMPORTANT |**404** Not Found  |
+| Error Code                   | Description                       | Status code       |
+|------------------------------|-----------------------------------|-------------------|
+| `some_very_important_error`  | THIS ERROR IS VERY VERY IMPORTANT | **404** Not Found |
 
 Then, you can insert this table right into your documentation!
 
