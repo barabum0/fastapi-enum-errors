@@ -1,15 +1,20 @@
 # FastAPI Enum Errors
 
-A library for defining and handling HTTP errors in your FastAPI applications using Python enums. It lets you create structured error definitions that automatically generate standardized JSON responses, API documentation, and even detailed Markdown tables for error summaries.
+A library for defining and handling HTTP errors in your FastAPI applications using Python enums. It lets you create
+structured error definitions that automatically generate standardized JSON responses, API documentation, and even
+detailed Markdown tables for error summaries.
 
 ## Features
 
 - **Enum-Based Error Definitions:** Define HTTP errors as enum members with associated error codes and descriptions.
-- **Automatic JSON Response Generation:** Each error can build its own JSON body (optionally enhanced with extra details).
+- **Automatic JSON Response Generation:** Each error can build its own JSON body (optionally enhanced with extra
+  details).
 - **Custom Exception Conversion:** Easily convert enum errors into HTTP exceptions for FastAPI.
-- **FastAPI Responses Schema:** Build OpenAPI response definitions from your enum errors, with schema properties and examples.
+- **FastAPI Responses Schema:** Build OpenAPI response definitions from your enum errors, with schema properties and
+  examples.
 - **Documentation Utilities:** Generate Markdown tables summarizing all defined errors.
-- **Automatic Docstring Integration:** Extract human-friendly error details from docstrings defined right after enum members.
+- **Automatic Docstring Integration:** Extract human-friendly error details from docstrings defined right after enum
+  members.
 
 ## Installation
 
@@ -19,7 +24,8 @@ Install the package via pip:
 pip install fastapi-enum-errors
 ```
 
-> **Note:** This project requires [FastAPI](https://fastapi.tiangolo.com/), [httpx](https://www.python-httpx.org/), and [Pydantic](https://docs.pydantic.dev/) as peer dependencies.
+> **Note:** This project requires [FastAPI](https://fastapi.tiangolo.com/), [httpx](https://www.python-httpx.org/),
+> and [Pydantic](https://docs.pydantic.dev/) as peer dependencies.
 
 ## Quick Start
 
@@ -33,6 +39,7 @@ You can extend the built-in `ErrorResponse` model to add additional details to y
 from pydantic import Field
 from fastapi_enum_errors.models import ErrorResponse
 
+
 class NotSoImportantErrorDetails(ErrorResponse):
     some_ids: list[int] = Field(
         examples=[[123, 456, 789]],
@@ -42,11 +49,13 @@ class NotSoImportantErrorDetails(ErrorResponse):
 
 ### 2. Define Your Error Enum
 
-Extend `ErrorEnum` to declare your project's errors. Use `auto()` for automatic error code generation and specify the HTTP status code for each error. The docstring for each member serves as the error description.
+Extend `ErrorEnum` to declare your project's errors. Use `auto()` for automatic error code generation and specify the
+HTTP status code for each error. The docstring for each member serves as the error description.
 
 ```python
 from enum import auto
 from fastapi_enum_errors import ErrorEnum, classproperty
+
 
 class SomeErrors(ErrorEnum):
     SOME_VERY_IMPORTANT_ERROR = (auto(), 404)
@@ -65,7 +74,8 @@ class SomeErrors(ErrorEnum):
 
 ### 3. Using the Enum in Your Application
 
-The library automatically configures your application by including the built‑in helper function `errorenum_prepare_app`. You just need to call it to ensure your FastAPI (or Starlette) application has the correct exception handler.
+The library automatically configures your application by including the built‑in helper function `errorenum_prepare_app`.
+You just need to call it to ensure your FastAPI (or Starlette) application has the correct exception handler.
 
 #### a. Converting an Error to an Exception
 
@@ -77,6 +87,7 @@ from fastapi_enum_errors import errorenum_prepare_app
 
 app = FastAPI()
 errorenum_prepare_app(app)
+
 
 @app.get("/example")
 async def example():
@@ -121,6 +132,7 @@ async def example():
 ```
 
 This returns a dictionary mapping HTTP status codes to response details, including:
+
 - A description combining the HTTP status phrase and error details.
 - A JSON schema for the error response.
 - Examples for documentation.
@@ -136,15 +148,17 @@ print(table_md)
 
 Example output:
 
-| Error Code                   | Description                       | Status code       |
-|------------------------------|-----------------------------------|-------------------|
-| `some_very_important_error`  | THIS ERROR IS VERY VERY IMPORTANT | **404** Not Found |
+| Error Code                  | Description                                                           | Status code                   |
+|-----------------------------|-----------------------------------------------------------------------|-------------------------------|
+| `some_very_important_error` | THIS ERROR IS VERY VERY IMPORTANT                                     | **404** Not Found             |
+| `not_so_important_error`    | This error is not very important, but it has some additional details. | **500** Internal Server Error |l
 
 Then, you can insert this table right into your documentation!
 
 ## Contributing
 
-Contributions are welcome! If you find any bugs or have feature requests, please open an issue or submit a pull request on GitHub.
+Contributions are welcome! If you find any bugs or have feature requests, please open an issue or submit a pull request
+on GitHub.
 
 ## License
 
