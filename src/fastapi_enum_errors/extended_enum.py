@@ -1,14 +1,14 @@
 import inspect
 from enum import Enum
 from functools import cache
-from typing import Any, Self
+from typing import Any
 
 
 class ExtendedEnum(Enum):
     @cache
-    def _get_docstring(self: Self) -> str | None:
+    def _get_docstring(self) -> str | None:
         sourcelines = [l.strip() for l in inspect.getsourcelines(self.__class__)[0]]
-        search_str = f'{self.name} = "{self.value}"' if isinstance(self.value, str) else f"{self.name} = {self.value}"
+        search_str = f"{self.name} = "
 
         found_str = next(filter(lambda x: search_str in x, sourcelines), None)
         if found_str is None:
