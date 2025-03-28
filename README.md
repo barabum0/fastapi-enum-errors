@@ -1,7 +1,145 @@
-# Template for my Python (non-packages) projects
-Feel free to use!
+# FastAPI Enum Errors
 
-### Before using, rename the project and docker image in following files
-- [`pyproject.toml`](pyproject.toml)
-- [`docker-compose.yml`](docker-compose.yml)
-- [`.github/workflows/build-docker-image-release.yml`](.github/workflows/build-docker-image-release.yml)
+A library for defining and handling HTTP errors in your FastAPI applications using Python enums. It lets you create structured error definitions that automatically generate standardized JSON responses, API documentation, and even detailed Markdown tables for error summaries.
+
+## Features
+
+- **Enum-Based Error Definitions:** Define HTTP errors as enum members with associated error codes and descriptions.
+- **Automatic JSON Response Generation:** Each error can build its own JSON body (optionally enhanced with extra details).
+- **Custom Exception Conversion:** Easily convert enum errors into HTTP exceptions for FastAPI.
+- **FastAPI Responses Schema:** Build OpenAPI response definitions from your enum errors, with schema properties and examples.
+- **Documentation Utilities:** Generate Markdown tables summarizing all defined errors.
+- **Automatic Docstring Integration:** Extract human-friendly error details from docstrings defined right after enum members.
+
+## Installation
+
+Install the package via pip:
+
+```bash
+pip install fastapi-enum-errors
+```
+
+> **Note:** This project requires [FastAPI](https://fastapi.tiangolo.com/), [httpx](https://www.python-httpx.org/), and [Pydantic](https://docs.pydantic.dev/) as peer dependencies.
+
+## Quick Start
+
+Define your error responses and errors by extending the base classes provided by the library.
+
+### 1. Define a Custom Error Response Model
+
+You can extend the built-in `ErrorResponse` model to add additional details to your error responses:
+
+```python
+from pydantic import Field
+from fastapi_enum_errors.models import ErrorResponse
+
+class NotSoImportantErrorDetails(ErrorResponse):
+    some_ids: list[int] = Field(
+        examples=[[123, 456, 789]],
+        description="List of relevant IDs for the error context."
+    )
+```
+
+### 2. Define Your Error Enum
+
+Extend `ErrorEnum` to declare your project's errors. Use `auto()` for automatic error code generation and specify the HTTP status code for each error. The docstring for each member serves as the error description.
+
+```python
+from enum import auto
+from fastapi_enum_errors import ErrorEnum, classproperty
+
+class SomeErrors(ErrorEnum):
+    SOME_VERY_IMPORTANT_ERROR = (auto(), 404)
+    """THIS ERROR IS VERY VERY IMPORTANT"""
+
+    NOT_SO_IMPORTANT_ERROR = (auto(), 500)
+    """This error is not very important, but it has some additional details."""
+
+    @classproperty
+    def error_response_models(cls) -> dict:
+        # Map specific errors to their response models.
+        return {
+            cls.NOT_SO_IMPORTANT_ERROR: NotSoImportantErrorDetails,
+        }
+```
+
+### 3. Using the Enum in Your Application
+
+#### a. Converting an Error to an Exception
+
+Convert an error enum member to an HTTP exception with a properly formatted JSON response:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/example")
+async def example():
+    # Raise a JSONHTTPException based on an enum error.
+    raise SomeErrors.SOME_VERY_IMPORTANT_ERROR.as_exception()
+
+# When this endpoint is hit, FastAPI will respond with a JSON error body.
+```
+
+#### b. Asserting API Responses in Tests
+
+Use the `assert_response` method to verify that the HTTP response from your API matches the expected error format:
+
+```python
+import httpx
+
+response = httpx.get("http://localhost:8000/example")
+SomeErrors.SOME_VERY_IMPORTANT_ERROR.assert_response(response)
+```
+
+#### c. Generating API Response Documentation
+
+Automatically build the OpenAPI response specifications for an endpoint by calling:
+
+```python
+from fastapi import FastAPI
+
+app = FastAPI()
+
+
+@app.get(
+    "/example",
+    responses=SomeErrors.build_responses(
+        SomeErrors.SOME_VERY_IMPORTANT_ERROR,
+    ),
+)
+async def example():
+    # Raise a JSONHTTPException based on an enum error.
+    raise SomeErrors.SOME_VERY_IMPORTANT_ERROR.as_exception()
+```
+
+This returns a dictionary mapping HTTP status codes to response details, including:
+- A description combining the HTTP status phrase and error details.
+- A JSON schema for the error response.
+- Examples for documentation.
+
+#### d. Generating a Markdown Table Summary
+
+Generate a Markdown table summarizing all errors defined in your enum:
+
+```python
+table_md = SomeErrors.build_md_table_for_all_errors()
+print(table_md)
+```
+
+Example output:
+
+|Error Code                   |Description                       | Status code       |
+|-----------------------------|----------------------------------|-------------------|
+|`some_very_important_error`  |THIS ERROR IS VERY VERY IMPORTANT |**404** Not Found  |
+
+Then, you can insert this table right into your documentation!
+
+## Contributing
+
+Contributions are welcome! If you find any bugs or have feature requests, please open an issue or submit a pull request on GitHub.
+
+## License
+
+Distributed under the MIT License. See `LICENSE` for more information.
