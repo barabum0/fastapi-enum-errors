@@ -91,10 +91,15 @@ errorenum_prepare_app(app)
 
 @app.get("/example")
 async def example():
-    # Raise a JSONHTTPException based on an enum error.
+    # Raise an enum error.
     raise SomeErrors.SOME_VERY_IMPORTANT_ERROR.as_exception()
 
-# When this endpoint is hit, FastAPI will respond with a properly formatted JSON error body.
+@app.get("/example_2")
+async def example_2():
+    # Raise an enum error with additional fields.
+    raise SomeErrors.NOT_SO_IMPORTANT_ERROR.as_exception(some_ids=[1, 2, 3])
+
+# When these endpoints are hit, FastAPI will respond with a properly formatted JSON error body.
 ```
 
 #### b. Asserting API Responses in Tests
@@ -104,8 +109,13 @@ Use the `assert_response` method to verify that the HTTP response from your API 
 ```python
 import httpx
 
+# Assert basic error.
 response = httpx.get("http://localhost:8000/example")
 SomeErrors.SOME_VERY_IMPORTANT_ERROR.assert_response(response)
+
+# Assert basic error and check additional fields.
+response = httpx.get("http://localhost:8000/example_2")
+SomeErrors.SOME_VERY_IMPORTANT_ERROR.assert_response(response, some_ids=[1, 2, 3])
 ```
 
 #### c. Generating API Response Documentation
@@ -127,8 +137,18 @@ errorenum_prepare_app(app)
     ),
 )
 async def example():
-    # Raise a JSONHTTPException based on an enum error.
+    # Raise an enum error.
     raise SomeErrors.SOME_VERY_IMPORTANT_ERROR.as_exception()
+
+@app.get(
+    "/example_2",
+    responses=SomeErrors.build_responses(
+        SomeErrors.NOT_SO_IMPORTANT_ERROR,
+    ),
+)
+async def example_2():
+    # Raise an enum error with additional fields.
+    raise SomeErrors.NOT_SO_IMPORTANT_ERROR.as_exception(some_ids=[1, 2, 3])
 ```
 
 This returns a dictionary mapping HTTP status codes to response details, including:
