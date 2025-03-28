@@ -23,15 +23,15 @@ class SomeErrors(ErrorEnum):
         }
 
 
-print(SomeErrors.__members__)
+print(SomeErrors.__members__)  # noqa: T201
 # {'SOME_VERY_IMPORTANT_ERROR': <SomeErrors.SOME_VERY_IMPORTANT_ERROR: error='some_very_important_error', code=404>}
 
-print(SomeErrors.build_md_table_for_all_errors())
+print(SomeErrors.build_md_table_for_all_errors())  # noqa: T201
 # | Error Code                  | Description                       | Status code       |
 # |-----------------------------|-----------------------------------|-------------------|
 # | `some_very_important_error` | THIS ERROR IS VERY VERY IMPORTANT | **404** Not Found |
 
-print(SomeErrors.build_responses(SomeErrors.SOME_VERY_IMPORTANT_ERROR))
+print(SomeErrors.build_responses(SomeErrors.SOME_VERY_IMPORTANT_ERROR))  # noqa: T201
 # {
 #    "404":{
 #       "description":"Not Found\n- THIS ERROR IS VERY VERY IMPORTANT",
