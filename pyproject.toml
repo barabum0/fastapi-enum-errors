@@ -1,6 +1,6 @@
 [project]
 name = "fastapi_enum_errors"
-version = "0.1.0"
+version = "0.1.1"
 description = "Addon for FastAPI that simplifies working with custom errors and allows you to operate on them as if they were values in an Enum."
 readme = "README.md"
 license = "MIT"
