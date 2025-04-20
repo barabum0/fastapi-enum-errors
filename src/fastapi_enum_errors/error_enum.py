@@ -2,7 +2,7 @@ import http
 from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from functools import cache, cached_property
+from functools import cached_property, lru_cache
 from typing import Any, Self
 
 import httpx
@@ -30,6 +30,14 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
         Must be implemented by subclasses.
         """
         return {}
+
+    @lru_cache
+    @classmethod
+    def get_initial_status_phrase(cls, code: int) -> str:
+        try:
+            return http.HTTPStatus(code).phrase
+        except ValueError:
+            return "Error"
 
     @staticmethod
     def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
@@ -96,7 +104,7 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
 
             responses[code] = {
                 "description": (
-                    f"{get_initial_status_phrase(code)}\n" + "\n".join(f"- {error.detail}" for error in code_errors)
+                    f"{cls.get_initial_status_phrase(code)}\n" + "\n".join(f"- {error.detail}" for error in code_errors)
                 ),
                 "content": {
                     "application/json": {
@@ -157,17 +165,9 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
             (
                 f"`{error.error}`",
                 error.detail or "Error",
-                f"**{error.code}** {get_initial_status_phrase(error.code)}",
+                f"**{error.code}** {cls.get_initial_status_phrase(error.code)}",
             )
             for error in list(cls)
         )
 
         return "\n".join("|" + "|".join(row) + "|" for row in rows)
-
-
-@cache
-def get_initial_status_phrase(code: int) -> str:
-    try:
-        return http.HTTPStatus(code).phrase
-    except ValueError:
-        return "Error"
