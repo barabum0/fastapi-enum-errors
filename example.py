@@ -2,7 +2,7 @@ from enum import auto
 
 from pydantic import Field
 
-from fastapi_enum_errors import ErrorEnum, ErrorResponse, classproperty
+from fastapi_enum_errors import ErrorEnum, ErrorResponse
 
 
 class NotSoImportantErrorDetails(ErrorResponse):
@@ -16,7 +16,6 @@ class SomeErrors(ErrorEnum):
     NOT_SO_IMPORTANT_ERROR = (auto(), 500)
     """This error is not very important, but it has some additional details."""
 
-    @classproperty
     def error_response_models(cls) -> dict:
         return {
             cls.NOT_SO_IMPORTANT_ERROR: NotSoImportantErrorDetails,

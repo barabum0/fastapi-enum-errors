@@ -63,7 +63,7 @@ HTTP status code for each error. The docstring for each member serves as the err
 
 ```python
 from enum import auto
-from fastapi_enum_errors import ErrorEnum, classproperty
+from fastapi_enum_errors import ErrorEnum
 
 
 class SomeErrors(ErrorEnum):
@@ -73,7 +73,6 @@ class SomeErrors(ErrorEnum):
     NOT_SO_IMPORTANT_ERROR = (auto(), 500)
     """This error is not very important, but it has some additional details."""
 
-    @classproperty
     def error_response_models(cls) -> dict:
         # Map specific errors to their response models.
         return {

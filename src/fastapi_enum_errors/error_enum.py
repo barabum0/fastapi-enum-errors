@@ -7,7 +7,6 @@ from typing import Any, Self
 
 import httpx
 
-from fastapi_enum_errors.classproperty import classproperty
 from fastapi_enum_errors.exception import JSONHTTPException
 from fastapi_enum_errors.extended_enum import ExtendedEnum
 from fastapi_enum_errors.models import ErrorResponse
@@ -23,8 +22,8 @@ class ErrorEnumMixin:
 
 
 class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
-    @classproperty
     @abstractmethod
+    @classmethod
     def error_response_models(cls) -> dict:
         """
         Models that will be used to provide additional information about the error.
@@ -60,7 +59,7 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
         """
         Build the JSON body for the error response given (optional) extra parameters.
         """
-        response_model_cls = self.error_response_models.get(self, ErrorResponse)
+        response_model_cls = self.error_response_models().get(self, ErrorResponse)
         response_model = response_model_cls(detail=self.detail, status_code=self.code, error_code=self.error, **kwargs)
         return response_model.model_dump(mode="json")
 
@@ -90,7 +89,7 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
             additional_schema: dict[str, Any] = {}
 
             for error in code_errors:
-                schema = cls.error_response_models.get(error)
+                schema = cls.error_response_models().get(error)
                 if schema:
                     schema_properties = schema.model_json_schema(mode="serialization").get("properties", {})
                     additional_schema |= schema_properties
@@ -119,7 +118,8 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
                                 "value": {
                                     **{
                                         prop: value.get("examples", [""])[0]
-                                        for prop, value in cls.error_response_models.get(error, ErrorResponse)
+                                        for prop, value in cls.error_response_models()
+                                        .get(error, ErrorResponse)
                                         .model_json_schema()
                                         .get("properties", {})
                                         .items()
