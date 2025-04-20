@@ -2,7 +2,7 @@ import http
 from abc import abstractmethod
 from collections.abc import Iterable
 from dataclasses import dataclass
-from functools import cached_property, lru_cache
+from functools import cached_property
 from typing import Any, Self
 
 import httpx
@@ -22,8 +22,8 @@ class ErrorEnumMixin:
 
 
 class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
-    @abstractmethod
     @classmethod
+    @abstractmethod
     def error_response_models(cls) -> dict:
         """
         Models that will be used to provide additional information about the error.
@@ -31,7 +31,6 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
         """
         return {}
 
-    @lru_cache
     @classmethod
     def get_initial_status_phrase(cls, code: int) -> str:
         try:
