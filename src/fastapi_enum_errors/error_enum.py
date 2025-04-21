@@ -42,6 +42,14 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
     def _generate_next_value_(name: str, start: int, count: int, last_values: list) -> str:
         return name.lower()
 
+    @classmethod
+    def from_str(cls, str_code: str) -> Self:
+        """Get error from its str-code"""
+        upper_members = {k.upper(): v for k, v in cls.__members__.items()}
+        if str_code.upper() in upper_members:
+            return upper_members[str_code.upper()]
+        raise ValueError(f"{cls.__name__} doesn't have an error with str-code {str_code}")
+
     def assert_response(self, response: httpx.Response, **body_kwargs: Any) -> None:
         """
         Check that the given response matches the error.
