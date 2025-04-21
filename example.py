@@ -80,3 +80,6 @@ print(SomeErrors.build_responses(SomeErrors.SOME_VERY_IMPORTANT_ERROR))  # noqa:
 #       }
 #    }
 # }
+
+print(SomeErrors.from_str("some_very_important_error"))
+# SomeErrors.SOME_VERY_IMPORTANT_ERROR
