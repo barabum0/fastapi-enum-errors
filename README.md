@@ -1,5 +1,3 @@
-from example import SomeErrors
-
 # FastAPI Enum Errors
 
 ---
