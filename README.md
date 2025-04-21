@@ -1,3 +1,5 @@
+from example import SomeErrors
+
 # FastAPI Enum Errors
 
 ---
@@ -73,6 +75,7 @@ class SomeErrors(ErrorEnum):
     NOT_SO_IMPORTANT_ERROR = (auto(), 500)
     """This error is not very important, but it has some additional details."""
 
+    @classmethod
     def error_response_models(cls) -> dict:
         # Map specific errors to their response models.
         return {
@@ -182,6 +185,19 @@ Example output:
 | `not_so_important_error`    | This error is not very important, but it has some additional details. | **500** Internal Server Error |l
 
 Then, you can insert this table right into your documentation!
+
+#### e. Converting string to an error
+
+Below is an example that shows how to convert string to an error
+
+```python
+SomeErrors.from_str("not_so_important_error")
+# SomeErrors.NOT_SO_IMPORTANT_ERROR
+
+# This method is case-independent
+SomeErrors.from_str("NOt_sO_impORTant_eRROr")
+# SomeErrors.NOT_SO_IMPORTANT_ERROR
+```
 
 ## Contributing
 
