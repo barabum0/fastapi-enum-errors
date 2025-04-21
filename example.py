@@ -16,6 +16,7 @@ class SomeErrors(ErrorEnum):
     NOT_SO_IMPORTANT_ERROR = (auto(), 500)
     """This error is not very important, but it has some additional details."""
 
+    @classmethod
     def error_response_models(cls) -> dict:
         return {
             cls.NOT_SO_IMPORTANT_ERROR: NotSoImportantErrorDetails,
