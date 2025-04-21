@@ -80,7 +80,7 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
         )
 
     @classmethod
-    def build_responses_from_list(cls, errors: Iterable[Self]) -> dict[int, dict[str, Any]]:
+    def build_responses_from_list(cls, errors: Iterable[Self]) -> dict[int | str, dict[str, Any]]:
         """
         Build FastAPI responses from a list of errors.
 
@@ -145,7 +145,7 @@ class ErrorEnum(ErrorEnumMixin, ExtendedEnum):
         return responses
 
     @classmethod
-    def build_responses(cls, *errors: Self) -> dict[int, dict[str, Any]]:
+    def build_responses(cls, *errors: Self) -> dict[int | str, dict[str, Any]]:
         """
         Build FastAPI responses from given errors as varargs.
         """
